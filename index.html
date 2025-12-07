@@ -221,8 +221,7 @@
     <!-- Kişiye özel foto (şifreye göre src değişecek) -->
     <img id="kisiFoto" src="">
 
-    <!-- Müzik player + buton -->
-    <audio id="melodi" src="https://drive.google.com/uc?export=download&id=1oDq8TdNjpwkJUg1K7SzUg9tDbSDKDO45" loop></audio>
+    <!-- Sadece buton (ses JS ile üretilecek) -->
     <button id="muzikButon" onclick="muzikToggle()">Müzik: Kapalı</button>
 
   </div>
@@ -258,26 +257,62 @@
       document.getElementById("ekran").classList.add("glow");
     }
 
-    // Müzik kontrol
-    const melodi = document.getElementById("melodi");
-    const muzikButon = document.getElementById("muzikButon");
+    // ===== FNAF TARZI 30 SANİYELİK KORKU MELODİSİ (DOSYASIZ) =====
+    let audioCtx = null;
     let muzikAcik = false;
+    let melodiInterval = null;
 
-    // %25 kısık ses
-    melodi.volume = 0.25;
+    function yaratAudioContext() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+      }
+    }
+
+    function fnfTarziSes() {
+      if (!muzikAcik) return;
+      yaratAudioContext();
+      const ctx = audioCtx;
+
+      const gain = ctx.createGain();
+      gain.gain.value = 0.06; // yaklaşık %25 kısık
+      gain.connect(ctx.destination);
+
+      // Karanlık, boğuk FNAF tarzı frekanslar
+      const frekanslar = [
+        110, 130, 98, 87, 146, 123, 92, 160,
+        140, 105, 75, 180, 95, 125
+      ];
+
+      let t = ctx.currentTime;
+
+      for (let i = 0; i < frekanslar.length; i++) {
+        const osc = ctx.createOscillator();
+        osc.type = "triangle"; // boğuk korku tonu
+        osc.frequency.value = frekanslar[i];
+        osc.connect(gain);
+
+        osc.start(t);
+        osc.stop(t + 1.8);   // her nota ~1.8 sn
+
+        t += 2.1;            // notalar arası boşluk (yavaş gerilim)
+      }
+    }
 
     function muzikToggle() {
       muzikAcik = !muzikAcik;
 
       if (muzikAcik) {
-        melodi.currentTime = 0;
-        melodi.play();
-        muzikButon.innerText = "Müzik: Açık";
+        yaratAudioContext();
+        fnfTarziSes(); // hemen başlat
+        melodiInterval = setInterval(fnfTarziSes, 30000); // 30 sn’de bir tekrar
+        document.getElementById("muzikButon").innerText = "Müzik: Açık";
       } else {
-        melodi.pause();
-        muzikButon.innerText = "Müzik: Kapalı";
+        clearInterval(melodiInterval);
+        document.getElementById("muzikButon").innerText = "Müzik: Kapalı";
       }
     }
+    // ============================================================
 
     function kontrolEt() {
       temizEfekt();
@@ -285,10 +320,9 @@
       const sonuc = document.getElementById("sonuc");
       const foto = document.getElementById("kisiFoto");
 
-      // müzik açıksa her mesajda baştan başlat
+      // müzik açıksa her mesajda FNAF tarzı sesi tetikle
       if (muzikAcik) {
-        melodi.currentTime = 0;
-        melodi.play();
+        fnfTarziSes();
       }
 
       if (!sifre) {
