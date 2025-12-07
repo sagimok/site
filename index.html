@@ -67,7 +67,7 @@
       margin-bottom: 15px;
     }
 
-    /* 🔑 ŞİFRE KUTUSU BURASI */
+    /* 🔑 ŞİFRE KUTUSU */
     input {
       padding: 12px;
       width: 250px;
@@ -75,7 +75,7 @@
       border: none;
       font-size: 16px;
       text-align: center;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
       outline: none;
       background: #222;
       color: #fff;
@@ -83,13 +83,13 @@
 
     .buton {
       display: block;
-      margin: 10px auto;
+      margin: 8px auto;
       width: 260px;
-      padding: 14px 30px;
+      padding: 12px 30px;
       background: linear-gradient(45deg, #ff0066, #ff8800);
       color: white;
       text-decoration: none;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: bold;
       border-radius: 50px;
       border: none;
@@ -108,11 +108,22 @@
       box-shadow: 0 0 15px rgba(253,29,29,0.6);
     }
 
+    .secondary {
+      background: linear-gradient(45deg, #3c3c3c, #777);
+      box-shadow: 0 0 12px rgba(200,200,200,0.4);
+    }
+
     .mesaj {
-      margin-top: 22px;
-      font-size: 20px;
+      margin-top: 18px;
+      font-size: 19px;
       min-height: 30px;
       font-weight: bold;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .mesaj.goster {
+      opacity: 1;
     }
 
     /* KÖŞE IŞIK EFEKTİ */
@@ -130,26 +141,77 @@
       from { opacity: 0.3; }
       to { opacity: 0.85; }
     }
+
+    /* EFE KARARTMA OVERLAY */
+    .darken::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* EFEKT KATMANI (KALP YAĞMURU / KONFETİ) */
+    #efektKatmani {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 2;
+    }
+
+    .heart {
+      position: absolute;
+      font-size: 22px;
+      animation: heartFall 2.5s linear forwards;
+    }
+
+    @keyframes heartFall {
+      0% { transform: translateY(-10%); opacity: 1; }
+      100% { transform: translateY(110%); opacity: 0; }
+    }
+
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 14px;
+      border-radius: 2px;
+      animation: confettiFall 2.2s linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-10%) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110%) rotate(360deg); opacity: 0; }
+    }
   </style>
 </head>
 <body id="ekran">
+
+  <!-- Efekt katmanı -->
+  <div id="efektKatmani"></div>
 
   <div class="kutu">
 
     <!-- FOTO -->
     <div class="pp-wrapper">
       <div class="pp-isin">
-        <img src="https://cdn.discordapp.com/attachments/1442521696690245814/1447328577837207746/the-original-image-of-the-monkey-thinking-meme-v0-g5bpdf8smaaf1.webp?ex=69373947&is=6935e7c7&hm=1163668bafb97eeebcef1a7bb1cc13c0eeaef3ab2fde8db29bcd1ad657740e7e&" class="pp">
+        <img src="https://cdn.discordapp.com/attachments/1442521696690245814/1447328577837207746/the-original-image-of-the-monkey-thinking-meme-v0-g5bpdf8smaaf1.webp" class="pp">
       </div>
     </div>
 
-    <h1>Naber panpa ben Ensar 😎</h1>
+    <h1>Naber panpa ben Ensar </h1>
     <p>Sagi derler – Şifreni yaz pampa 🔐</p>
 
     <!-- 🔑 ŞİFRE GİRİŞİ -->
     <input type="password" id="sifre" placeholder="Şifreni buraya yaz">
 
     <button class="buton" onclick="kontrolEt()">Mesajı Göster ❤️</button>
+
+    <!-- Yeni genel mesaj butonu -->
+    <button class="buton secondary" onclick="genelMesaj()">
+      Şifren yok mu? Sana da mesajım var 💬
+    </button>
 
     <a class="buton insta" href="https://www.instagram.com/sagi_mok?igsh=bzFhN3BjcWU2cXR4" target="_blank">
       Instagram Hesabıma Git 🚀
@@ -159,6 +221,40 @@
   </div>
 
   <script>
+    function temizEfekt() {
+      const katman = document.getElementById("efektKatmani");
+      katman.innerHTML = "";
+      const ekran = document.getElementById("ekran");
+      ekran.classList.remove("darken");
+    }
+
+    function kalpYagmuru() {
+      temizEfekt();
+      const katman = document.getElementById("efektKatmani");
+      for (let i = 0; i < 25; i++) {
+        const span = document.createElement("span");
+        span.className = "heart";
+        span.textContent = "💗";
+        span.style.left = Math.random() * 100 + "%";
+        span.style.animationDelay = (Math.random() * 1.2) + "s";
+        katman.appendChild(span);
+      }
+    }
+
+    function konfetiPatlat() {
+      temizEfekt();
+      const katman = document.getElementById("efektKatmani");
+      const renkler = ["#ff004c", "#ffb300", "#00f7ff", "#9d00ff", "#00ff7b"];
+      for (let i = 0; i < 35; i++) {
+        const parca = document.createElement("div");
+        parca.className = "confetti";
+        parca.style.left = Math.random() * 100 + "%";
+        parca.style.backgroundColor = renkler[Math.floor(Math.random() * renkler.length)];
+        parca.style.animationDelay = (Math.random() * 1.0) + "s";
+        katman.appendChild(parca);
+      }
+    }
+
     function renkEfekti(renk) {
       let ekran = document.getElementById("ekran");
       ekran.style.setProperty("--renk", renk);
@@ -167,68 +263,25 @@
       ekran.classList.add("glow");
     }
 
+    function mesajYaz(yazi) {
+      const sonuc = document.getElementById("sonuc");
+      sonuc.classList.remove("goster");
+      // reflow
+      void sonuc.offsetWidth;
+      sonuc.innerHTML = yazi;
+      sonuc.classList.add("goster");
+    }
+
     function kontrolEt() {
-      var sifre = document.getElementById("sifre").value.trim().toLowerCase();
-      var sonuc = document.getElementById("sonuc");
+      var input = document.getElementById("sifre");
+      var sifre = input.value.trim().toLowerCase();
+
+      temizEfekt();
+      document.getElementById("ekran").classList.remove("glow");
 
       if (!sifre) {
-        sonuc.innerHTML = "Boş geçme pampa 😈";
-        document.getElementById("ekran").classList.remove("glow");
+        mesajYaz("Boş geçme pampa 😈");
         return;
       }
 
-      switch (sifre) {
-        case "melis":
-          sonuc.innerHTML = "sevıyom senı pampa";
-          renkEfekti("red");
-          break;
-
-        case "mete":
-          sonuc.innerHTML = "kralsın dostum";
-          renkEfekti("deepskyblue");
-          break;
-
-        case "ayse":
-          sonuc.innerHTML = "best frıendlerımdensın kanka";
-          renkEfekti("gold");
-          break;
-
-        case "eren":
-          sonuc.innerHTML = "sanalda npcsin seviyom seni kanka";
-          renkEfekti("purple");
-          break;
-
-        case "mustafa":
-          sonuc.innerHTML = "senle haliçe işiyekmi pampa, doğum günün erkenden kutlu olsun 🎂🔥";
-          renkEfekti("orange");
-          break;
-
-        case "nehir":
-          sonuc.innerHTML = "sevilion kanka";
-          renkEfekti("crimson");
-          break;
-
-        case "enes":
-          sonuc.innerHTML = "seviyom seni pampa ❤️";
-          renkEfekti("hotpink");
-          break;
-
-        case "efe":
-          sonuc.innerHTML = "annenı dusunuyom pampaaa 😈";
-          renkEfekti("lime");
-          break;
-
-        case "random":
-          sonuc.innerHTML = "kendini sev pampa ❤️";
-          renkEfekti("cyan");
-          break;
-
-        default:
-          sonuc.innerHTML = "Bu şifre bende yok pampa 😅";
-          document.getElementById("ekran").classList.remove("glow");
-      }
-    }
-  </script>
-
-</body>
-</html>
+      let bulun
