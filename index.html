@@ -171,7 +171,7 @@
     #nehirFoto {
       display: none;
       margin-top: 15px;
-      width: 160px;
+      width: 180px;
       border-radius: 15px;
       box-shadow: 0 0 25px red;
     }
@@ -193,18 +193,18 @@
     </div>
 
     <h1>Naber panpa ben Ensar</h1>
-    <p>Sagi derler – Şifreni yaz pampa 🔐</p>
+    <p>Sagi derler – Şifreni yaz pampa</p>
 
     <input type="password" id="sifre" placeholder="Şifreni buraya yaz">
 
-    <button class="buton" onclick="kontrolEt()">Mesajı Göster ❤️</button>
+    <button class="buton" onclick="kontrolEt()">Mesajı Göster</button>
 
     <button class="buton secondary" onclick="genelMesaj()">
-      Şifren yok mu? Sana da mesajım var 💬
+      Şifren yok mu? Sana da mesajım var
     </button>
 
     <a class="buton insta" href="https://www.instagram.com/sagi_mok?igsh=bzFhN3BjcWU2cXR4" target="_blank">
-      Instagram Hesabıma Git 🚀
+      Instagram Hesabıma Git
     </a>
 
     <div class="mesaj" id="sonuc"></div>
@@ -227,7 +227,7 @@
       for (let i = 0; i < 20; i++) {
         let h = document.createElement("span");
         h.className = "heart";
-        h.textContent = "💗";
+        h.textContent = "❤";
         h.style.left = Math.random() * 100 + "%";
         h.style.animationDelay = (Math.random() * 1.2) + "s";
         kat.appendChild(h);
@@ -260,7 +260,7 @@
       const sonuc = document.getElementById("sonuc");
 
       if (!sifre) {
-        sonuc.innerHTML = "Boş geçme pampa 😈";
+        sonuc.innerHTML = "Boş geçme pampa";
         return;
       }
 
@@ -283,40 +283,41 @@
           renkEfekti("purple");
           break;
         case "mustafa":
-          sonuc.innerHTML = "senle haliçe işiyekmi pampa, doğum günün erkenden kutlu olsun 🎂🔥";
+          sonuc.innerHTML = "senle haliçe işiyekmi pampa, doğum günün erkenden kutlu olsun";
           renkEfekti("orange");
           konfetiPatlat();
           break;
         case "nehir":
-          sonuc.innerHTML = "sevilion kanka — bu sen yaz 🔥";
+          sonuc.innerHTML = "sevilion kanka — bu sen bu arada,";
           renkEfekti("crimson");
           document.getElementById("nehirFoto").style.display = "block";
           break;
         case "enes":
-          sonuc.innerHTML = "seviyom seni pampa ❤️";
+          sonuc.innerHTML = "seviyom seni pampa";
           renkEfekti("hotpink");
           kalpYagmuru();
           break;
         case "efe":
-          sonuc.innerHTML = "annenı dusunuyom pampaaa 😈";
+          sonuc.innerHTML = "annenı dusunuyom pampaaa";
           renkEfekti("lime");
           document.getElementById("ekran").classList.add("darken");
           break;
         case "random":
-          sonuc.innerHTML = "kendini sev pampa ❤️";
+          sonuc.innerHTML = "kendini sev pampa";
           renkEfekti("cyan");
           break;
         default:
-          sonuc.innerHTML = "Bu şifre bende yok pampa 😅";
+          sonuc.innerHTML = "Bu şifre bende yok pampa";
       }
     }
 
     function genelMesaj() {
       temizEfekt();
       document.getElementById("sonuc").innerHTML =
-        "Şifren olmasa da sorun değil pampa. Derdin varsa gel anlat, dinlerim seni. Kendine dikkat et, yalnız değilsin 💙";
+        "Şifren olmasa da sorun değil pampa. Derdin varsa gel anlat, dinlerim seni. Kendine dikkat et, yalnız değilsin.";
     }
   </script>
 
 </body>
 </html>
+
