@@ -22,6 +22,7 @@
       z-index: 5;
     }
 
+    /* Üstteki profil foto + çerçeve */
     .pp-wrapper {
       display: flex;
       justify-content: center;
@@ -32,7 +33,7 @@
       padding: 7px;
       border-radius: 50%;
       background: linear-gradient(45deg, #ff004c, #ffb300, #00f7ff, #9d00ff);
-      animation: donus 4s linear infinite, parlama 1.2s infinite alternate;
+      animation: donus 4s linear infinite, parlama 1.2s linear infinite alternate;
     }
 
     @keyframes donus {
@@ -109,6 +110,7 @@
       font-weight: bold;
     }
 
+    /* Köşe ışık */
     .glow::before {
       content: "";
       position: fixed;
@@ -124,6 +126,7 @@
       to { opacity: 0.85; }
     }
 
+    /* Ekran karartma (efe) */
     .darken::after {
       content: "";
       position: fixed;
@@ -132,6 +135,7 @@
       z-index: 1;
     }
 
+    /* Sonsuz konfeti katmanı */
     #efektKatmani {
       position: fixed;
       inset: 0;
@@ -140,44 +144,39 @@
       z-index: 2;
     }
 
-    .heart {
-      position: absolute;
-      font-size: 22px;
-      animation: heartFall 2.5s linear forwards;
-    }
-
-    @keyframes heartFall {
-      0% { transform: translateY(-10%); opacity: 1; }
-      100% { transform: translateY(110%); opacity: 0; }
-    }
-
     .confetti {
       position: absolute;
       width: 8px;
       height: 14px;
-      animation: confettiFall 2.2s linear forwards;
+      border-radius: 2px;
+      animation-name: confettiFall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
     }
 
     @keyframes confettiFall {
       0% { transform: translateY(-10%) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(110%) rotate(360deg); opacity: 0; }
+      100% { transform: translateY(110%) rotate(360deg); opacity: 1; }
     }
 
-    #nehirFoto {
+    /* Kişiye özel foto alanı */
+    #kisiFoto {
       display: none;
-      margin: 15px auto;
+      margin: 15px auto 0;
       width: 180px;
       border-radius: 15px;
-      box-shadow: 0 0 25px red;
+      box-shadow: 0 0 25px #444;
     }
   </style>
 </head>
 <body id="ekran">
 
+  <!-- Sonsuz konfeti katmanı -->
   <div id="efektKatmani"></div>
 
   <div class="kutu">
 
+    <!-- Maymun foto -->
     <div class="pp-wrapper">
       <div class="pp-isin">
         <img
@@ -203,45 +202,38 @@
 
     <div class="mesaj" id="sonuc"></div>
 
-    <img
-      id="nehirFoto"
-      src="https://cdn.discordapp.com/attachments/1433088303200079935/1447334125727121589/WhatsApp_Gorsel_2025-12-08_saat_00.08.17_07b42414.jpg?ex=69373e71&is=6935ecf1&hm=d10ba11b37880207562b243def91354703072bf8c783f783fdb03008097798e6&">
+    <!-- Kişiye özel foto (şifreye göre src değişecek) -->
+    <img id="kisiFoto" src="">
   </div>
 
   <script>
-    function temizEfekt() {
-      document.getElementById("efektKatmani").innerHTML = "";
-      document.getElementById("ekran").classList.remove("darken", "glow");
-      document.getElementById("nehirFoto").style.display = "none";
-    }
-
-    function kalpYagmuru() {
-      temizEfekt();
+    // Sayfa açılır açılmaz sonsuz konfeti üret
+    (function konfetiBaslat() {
       const kat = document.getElementById("efektKatmani");
-      for (let i = 0; i < 20; i++) {
-        let h = document.createElement("span");
-        h.className = "heart";
-        h.textContent = "❤";
-        h.style.left = Math.random() * 100 + "%";
-        kat.appendChild(h);
-      }
-    }
+      const renkler = ["red", "yellow", "cyan", "purple", "lime", "#ff6ec7", "#00ffaa"];
 
-    function konfetiPatlat() {
-      temizEfekt();
-      const kat = document.getElementById("efektKatmani");
-      const renkler = ["red", "yellow", "cyan", "purple", "lime"];
-      for (let i = 0; i < 25; i++) {
-        let c = document.createElement("div");
+      for (let i = 0; i < 70; i++) {
+        const c = document.createElement("div");
         c.className = "confetti";
         c.style.left = Math.random() * 100 + "%";
         c.style.background = renkler[Math.floor(Math.random() * renkler.length)];
+        const sure = 3 + Math.random() * 3;      // 3–6 sn
+        const gecikme = Math.random() * 4;       // 0–4 sn
+        c.style.animationDuration = sure + "s";
+        c.style.animationDelay = gecikme + "s";
         kat.appendChild(c);
       }
+    })();
+
+    function temizEfekt() {
+      document.getElementById("ekran").classList.remove("darken", "glow");
+      const foto = document.getElementById("kisiFoto");
+      foto.style.display = "none";
+      foto.src = "";
     }
 
-    function renkEfekti(r) {
-      document.body.style.setProperty("--renk", r);
+    function renkEfekti(renk) {
+      document.body.style.setProperty("--renk", renk);
       document.getElementById("ekran").classList.add("glow");
     }
 
@@ -249,22 +241,81 @@
       temizEfekt();
       const sifre = document.getElementById("sifre").value.toLowerCase().trim();
       const sonuc = document.getElementById("sonuc");
+      const foto = document.getElementById("kisiFoto");
+
+      if (!sifre) {
+        sonuc.innerHTML = "Boş geçme pampa";
+        return;
+      }
 
       switch (sifre) {
-        case "melis": sonuc.innerHTML="sevıyom senı pampa"; renkEfekti("red"); kalpYagmuru(); break;
-        case "mete": sonuc.innerHTML="kralsın dostum"; renkEfekti("deepskyblue"); break;
-        case "ayse": sonuc.innerHTML="best frıendlerımdensın kanka"; renkEfekti("gold"); break;
-        case "eren": sonuc.innerHTML="sanalda npcsin seviyom seni kanka"; renkEfekti("purple"); break;
-        case "mustafa": sonuc.innerHTML="senle haliçe işiyekmi pampa, doğum günün erkenden kutlu olsun"; renkEfekti("orange"); konfetiPatlat(); break;
-        case "nehir":
-          sonuc.innerHTML="sevilion kanka — bu sen bu arada,";
-          renkEfekti("crimson");
-          document.getElementById("nehirFoto").style.display="block";
+        case "melis":
+          sonuc.innerHTML = "sevıyom senı pampa";
+          renkEfekti("red");
+          foto.src = "https://cdn.discordapp.com/attachments/1433088303200079935/1447341087436832981/WhatsApp_Gorsel_2025-12-08_saat_00.34.54_48d383f1.jpg?ex=693744ed&is=6935f36d&hm=509a2530dfcfd1bb7947f5514784b34cf56607f75037179e35ec1fc947d19d21&";
+          foto.style.display = "block";
           break;
-        case "enes": sonuc.innerHTML="seviyom seni pampa"; renkEfekti("hotpink"); kalpYagmuru(); break;
-        case "efe": sonuc.innerHTML="annenı dusunuyom pampaaa"; renkEfekti("lime"); document.getElementById("ekran").classList.add("darken"); break;
-        case "random": sonuc.innerHTML="kendini sev pampa"; renkEfekti("cyan"); break;
-        default: sonuc.innerHTML="Bu şifre bende yok pampa";
+
+        case "mete":
+          sonuc.innerHTML = "kralsın dostum";
+          renkEfekti("deepskyblue");
+          foto.src = "https://cdn.discordapp.com/attachments/1433088303200079935/1447341699910078565/WhatsApp_Gorsel_2025-12-08_saat_00.34.54_f64b6225.jpg?ex=6937457f&is=6935f3ff&hm=78e3eaedcb0c2cebee88984e6e37f31e4323072c4babfb42985fd787ffa3721c&";
+          foto.style.display = "block";
+          break;
+
+        case "ayse":
+          sonuc.innerHTML = "best frıendlerımdensın kanka";
+          renkEfekti("gold");
+          break;
+
+        case "eren":
+          sonuc.innerHTML = "sanalda npcsin seviyom seni kanka";
+          renkEfekti("purple");
+          break;
+
+        case "mustafa":
+          sonuc.innerHTML = "senle haliçe işiyekmi pampa, doğum günün erkenden kutlu olsun";
+          renkEfekti("orange");
+          foto.src = "https://cdn.discordapp.com/attachments/1433088303200079935/1447340863335170171/WhatsApp_Gorsel_2025-12-08_saat_00.34.54_894de67a.jpg?ex=693744b8&is=6935f338&hm=11ebac27864f76ce6baf3207192869cc14616fec429ce071ae83a5a66e440298&";
+          foto.style.display = "block";
+          break;
+
+        case "nehir":
+          sonuc.innerHTML = "sevilion kanka — bu sen bu arada,";
+          renkEfekti("crimson");
+          foto.src = "https://cdn.discordapp.com/attachments/1433088303200079935/1447334125727121589/WhatsApp_Gorsel_2025-12-08_saat_00.08.17_07b42414.jpg?ex=69373e71&is=6935ecf1&hm=d10ba11b37880207562b243def91354703072bf8c783f783fdb03008097798e6&";
+          foto.style.display = "block";
+          break;
+
+        case "enes":
+          sonuc.innerHTML = "seviyom seni pampa";
+          renkEfekti("hotpink");
+          foto.src = "https://cdn.discordapp.com/attachments/1433088303200079935/1447340911716733028/WhatsApp_Gorsel_2025-12-08_saat_00.34.54_bb22ce20.jpg?ex=693744c3&is=6935f343&hm=c5b2127e06a21598e705026c1ab8cba1a066a95f83521b9815962c373df46a96&";
+          foto.style.display = "block";
+          break;
+
+        case "efe":
+          sonuc.innerHTML = "annenı dusunuyom pampaaa";
+          renkEfekti("lime");
+          document.getElementById("ekran").classList.add("darken");
+          foto.src = "https://cdn.discordapp.com/attachments/1433088303200079935/1447340754765615175/WhatsApp_Gorsel_2025-12-08_saat_00.34.55_700ab78b.jpg?ex=6937449e&is=6935f31e&hm=754b634a0d58a938270a6c35de607fcd4e55ca55339ba46a19cb61dd2fccee09&";
+          foto.style.display = "block";
+          break;
+
+        case "mehmet":
+          sonuc.innerHTML = "mehmet tualet temizlemeye devam et";
+          renkEfekti("orangered");
+          foto.src = "https://cdn.discordapp.com/attachments/1433088303200079935/1447342864391737435/WhatsApp_Gorsel_2025-12-08_saat_00.42.44_f984acee.jpg?ex=69374695&is=6935f515&hm=5bdb1f49e072cf2b009de508ee847fe6f82d3f39c1afa56363ef05200a55b635&";
+          foto.style.display = "block";
+          break;
+
+        case "random":
+          sonuc.innerHTML = "kendini sev pampa";
+          renkEfekti("cyan");
+          break;
+
+        default:
+          sonuc.innerHTML = "Bu şifre bende yok pampa";
       }
     }
 
